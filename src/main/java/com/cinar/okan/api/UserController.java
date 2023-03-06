@@ -1,45 +1,46 @@
 package com.cinar.okan.api;
 
 
-
 import com.cinar.okan.Entity.User;
 import com.cinar.okan.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/user")
+
 public class UserController {
-    @Autowired
+
+
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
+
         this.userService = userService;
     }
-
 
 
     @PostMapping("/create") //Path verdik.
 
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        User resultUser = userService.save(user);
-        return ResponseEntity.ok(resultUser);
+        return new ResponseEntity<User>(userService.addEmployee(user), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<User>> getUsers(){
-        List<User> users = userService.findAll();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<User>> findAll() {
+        return new ResponseEntity<List<User>>(userService.getAllEmployees(), HttpStatus.OK);
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+    public ResponseEntity<User> getById(@PathVariable Long id) {
 
-        User user = userService.findById(id);
-        return ResponseEntity.ok(user);
+        return new ResponseEntity<User>(userService.getEmployeeById(id), HttpStatus.OK);
     }
 
     /*
@@ -52,9 +53,8 @@ public class UserController {
     */
 
     @DeleteMapping("/remove/{id}")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") Long id) {
-        //ResponseEntity içine boolean değer yazdık eğer kayıt başarılı silinirse true, silinmezse false dönecek.
-        Boolean status = userService.deleteUser(id);
-        return ResponseEntity.ok(status);
+    public void deleteById(@PathVariable Long id) {
+
+        userService.deleteEmployee(id);
     }
 }

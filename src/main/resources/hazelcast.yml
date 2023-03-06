@@ -1,4 +1,0 @@
-hazelcast:
-  client:
-    network:
-      addresses: ["localhost:5701"]

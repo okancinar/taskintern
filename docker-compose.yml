@@ -1,19 +1,18 @@
 
 version: "3.9"
-
 services:
-  my-spring-boot-app:
-    image: spring-boot-rest-api
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    container_name: elasticsearch
     ports:
-      - "8080:8080"
-    environment:
-      - HAZELCAST_HOST=hazelcast
-      - HAZELCAST_PORT=5701
+      - 9200:9200
+      - 9300:9300
+  app:
+    build: .
+    ports:
+      - 8080:8080
     depends_on:
-      - hazelcast
-
-  hazelcast:
-    image: hazelcast/hazelcast:latest
-    ports:
-      - "5701:5701"
-      - "5702:5702"
+      - elasticsearch
+    environment:
+      - spring.data.elasticsearch.cluster-nodes=elasticsearch:9300
+      - spring.data.elasticsearch.cluster-name=docker-cluster

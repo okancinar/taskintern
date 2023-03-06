@@ -1,38 +1,42 @@
 package com.cinar.okan.Service;
 
+
+
 import com.cinar.okan.Entity.User;
 import com.cinar.okan.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
     @Autowired
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public List<User> getAllEmployees() {
+        List<User> employees = new ArrayList<>();
+        userRepository.findAll().forEach(employees::add);
+        return employees;
     }
 
-
-    public User save(User user) {
-        return userRepository.save(user);
+    public User getEmployeeById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
-
-    public User findById(Long id) {
-        return userRepository.findById(id);
+    public User addEmployee(User employee) {
+       return userRepository.save(employee);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public void updateEmployee(Long id, User employee) {
+        employee.setId(id);
+        userRepository.save(employee);
     }
 
-       public Boolean deleteUser(Long id) {
-
-           return userRepository.findAll().remove(id);
-       }
+    public void deleteEmployee(Long id) {
+        userRepository.deleteById(id);
+    }
 
 }
